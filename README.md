@@ -2,45 +2,56 @@
 
 **My Trello-like Node.js API**
 
-This is a project of an API made so I can use it on my other project [Aeon Planner](aeonplanner.netlify.com).
+This is a project of an API made so I can use it on my other project [Aeon Planner](https://aeonplanner.netlify.com/home).
 
 ## Endpoints:
 
 ### Boards
 
-  app.post('/boards', boards.create);
+```
+  post('/boards')
 
-  app.get('/boards', boards.findAll);
+  get('/boards')
 
-  app.get('/boards/:boardId', boards.findOne);
+  get('/boards/:boardId')
 
-  app.put('/boards/:boardId', boards.update);
+  put('/boards/:boardId')
 
-  app.delete('/boards/:boardId', boards.delete);
+  delete('/boards/:boardId')
+  
+```
 
 ### Lists
 
-  app.post('/lists', lists.create);
+```
 
-  app.get('/lists', lists.findAll);
+  post('/lists')
 
-  app.get('/lists/:listId', lists.findOne);
+  get('/lists')
 
-  app.put('/lists/:listId', lists.update);
+  get('/lists/:listId')
 
-  app.delete('/lists/:listId', lists.delete);
+  put('/lists/:listId')
+
+  delete('/lists/:listId')
+  
+```
 
 ### Tasks
 
-  app.post('/tasks', tasks.create);
+```
 
-  app.get('/tasks', tasks.findAll);
+  post('/tasks')
 
-  app.get('/tasks/:taskId', tasks.findOne);
+  get('/tasks')
 
-  app.put('/tasks/:taskId', tasks.update);
+  get('/tasks/:taskId')
 
-  app.delete('/tasks/:taskId', tasks.delete);
+  put('/tasks/:taskId')
+
+  delete('/tasks/:taskId')
+  
+```
 
 ## Schemas:
 
