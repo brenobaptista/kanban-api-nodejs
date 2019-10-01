@@ -1,10 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const app = express();
 
 app.use(compression());
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
