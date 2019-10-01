@@ -1,2 +1,3 @@
-# trello-api-nodejs
+# Trello API Node.js
+
 My Trello-like Node.js API
