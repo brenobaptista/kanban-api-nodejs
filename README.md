@@ -9,6 +9,7 @@ This is a project of an API made so I can use it on my other project [Aeon Plann
 ### Boards
 
 ```
+
   post('/boards')
 
   get('/boards')
@@ -55,6 +56,10 @@ This is a project of an API made so I can use it on my other project [Aeon Plann
 
 ## Schemas:
 
+```
+
 Boards: name
 Lists: name, boardId
 Tasks: name, description, listId
+
+```
