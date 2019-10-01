@@ -6,6 +6,12 @@ exports.create = (req, res) => {
       message: "Task name cannot be empty"
     });
   }
+  
+  if (!req.body.description) {
+    return res.status(400).send({
+      message: "Task description cannot be empty"
+    });
+  }
 
   if (!req.body.listId) {
     return res.status(400).send({
@@ -15,6 +21,7 @@ exports.create = (req, res) => {
 
   const task = new Task({
     name: req.body.name,
+    description: req.body.description,
     listId: req.body.listId
   });
 
@@ -67,6 +74,12 @@ exports.update = (req, res) => {
     });
   }
 
+  if (!req.body.description) {
+    return res.status(400).send({
+      message: "Task description cannot be empty"
+    });
+  }
+
   if (!req.body.listId) {
     return res.status(400).send({
       message: "List id cannot be empty"
@@ -75,6 +88,7 @@ exports.update = (req, res) => {
 
   Task.findByIdAndUpdate(req.params.taskId, {
     name: req.body.name,
+    description: req.body.description,
     listId: req.body.listId
   }, { new: true })
     .then(task => {
