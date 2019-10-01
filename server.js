@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
   res.json({"message": "Welcome to my Trello API clone made with Node.js."})
 });
 
-require('./config/heroku');
+require('./config/herokuAwaken')();
 
 require('./app/routes/board.routes.js')(app);
 require('./app/routes/list.routes.js')(app);
