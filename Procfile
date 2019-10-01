@@ -1,0 +1,1 @@
+web: MONGO_USER=bernor MONGO_PASSWORD=uV9rs8Oj7gfRKOKO node server.js

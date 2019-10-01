@@ -1,7 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const compression = require('compression');
 
 const app = express();
+
+app.use(compression());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,6 +34,4 @@ require('./app/routes/board.routes.js')(app);
 require('./app/routes/list.routes.js')(app);
 require('./app/routes/task.routes.js')(app);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server is listening on port 3000");
-});
+app.listen(process.env.PORT || 3000);
