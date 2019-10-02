@@ -6,12 +6,6 @@ exports.create = (req, res) => {
       message: "Task name cannot be empty"
     });
   }
-  
-  if (!req.body.description) {
-    return res.status(400).send({
-      message: "Task description cannot be empty"
-    });
-  }
 
   if (!req.body.listId) {
     return res.status(400).send({
@@ -71,12 +65,6 @@ exports.update = (req, res) => {
   if (!req.body.name) {
     return res.status(400).send({
       message: "Task name cannot be empty" 
-    });
-  }
-
-  if (!req.body.description) {
-    return res.status(400).send({
-      message: "Task description cannot be empty"
     });
   }
 
