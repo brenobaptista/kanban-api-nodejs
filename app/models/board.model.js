@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const BoardSchema = mongoose.Schema({
-  name: String
+  name: String,
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 module.exports = mongoose.model('Board', BoardSchema);

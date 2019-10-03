@@ -1,6 +1,6 @@
-module.exports = (app) => {
-  const boards = require('../controllers/board.controller.js');
+const boards = require('../controllers/board.controller.js');
 
+module.exports = (app) => {
   app.post('/boards', boards.create);
 
   app.get('/boards', boards.findAll);
@@ -10,4 +10,4 @@ module.exports = (app) => {
   app.put('/boards/:boardId', boards.update);
 
   app.delete('/boards/:boardId', boards.delete);
-}
+};

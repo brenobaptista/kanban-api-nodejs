@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const ListSchema = mongoose.Schema({
   name: String,
-  boardId: String
+  boardId: String,
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 module.exports = mongoose.model('List', ListSchema);
