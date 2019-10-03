@@ -62,6 +62,6 @@ URL: https://trello-api-nodejs.herokuapp.com
 
 Boards: name
 Lists: name, boardId
-Tasks: name, description, listId
+Tasks: name, listId, description (optional)
 
 ```
