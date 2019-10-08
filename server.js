@@ -5,6 +5,8 @@ const compression = require('compression');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+const dbConfig = require('./config/database.config.js');
+
 const app = express();
 
 app.use(compression());
@@ -15,22 +17,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
 
-const dbConfig = require('./config/database.config.js');
-
-mongoose.Promise = global.Promise;
-
-mongoose.connect(dbConfig.url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('Successfully connected to the database');
-}).catch((err) => {
-  console.log('Could not connect to the database. Exiting now...', err);
-  process.exit();
+app.get('/', (res) => {
+  res.json({ message: 'Welcome to my Trello API clone made with Node.js.' });
 });
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to my Trello API clone made with Node.js.' });
+async function runMongoose() {
+  mongoose.Promise = global.Promise;
+
+  await mongoose.connect(dbConfig.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  });
+  console.log('Successfully connected to the database');
+  console.log(`Listening on port ${process.env.PORT || 3000}`);
+  await app.listen(process.env.PORT || 3000);
+}
+
+runMongoose().catch((err) => {
+  console.log('Could not connect to the database. Exiting now...', err);
+  process.exit();
 });
 
 require('./config/herokuAwaken')();
@@ -38,5 +44,3 @@ require('./config/herokuAwaken')();
 require('./app/routes/board.routes.js')(app);
 require('./app/routes/list.routes.js')(app);
 require('./app/routes/task.routes.js')(app);
-
-app.listen(process.env.PORT || 3000);

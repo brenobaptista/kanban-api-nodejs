@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const List = require('../models/list.model.js');
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   if (!req.body.name) {
     return res.status(400).send({
       message: 'List name cannot be empty',
@@ -19,49 +19,49 @@ exports.create = (req, res) => {
     boardId: req.body.boardId,
   });
 
-  list.save()
-    .then((data) => {
-      res.send(data);
-    }).catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while creating the list.',
-      });
+  try {
+    const data = list.save();
+    await res.send(data);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || 'Some error occurred while creating the list.',
     });
+  }
 };
 
-exports.findAll = (req, res) => {
-  List.find()
-    .then((lists) => {
-      res.send(lists);
-    }).catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving lists.',
-      });
+exports.findAll = async (res) => {
+  try {
+    const lists = await List.find();
+    await res.send(lists);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || 'Some error occurred while retrieving lists.',
     });
+  }
 };
 
-exports.findOne = (req, res) => {
-  List.findById(req.params.listId)
-    .then((list) => {
-      if (!list) {
-        return res.status(404).send({
-          message: `List not found with id ${req.params.listId}`,
-        });
-      }
-      res.send(list);
-    }).catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(404).send({
-          message: `List not found with id ${req.params.listId}`,
-        });
-      }
-      return res.status(500).send({
-        message: `Error retrieving list with id ${req.params.listId}`,
+exports.findOne = async (req, res) => {
+  try {
+    const list = await List.findById(req.params.listId);
+    if (!list) {
+      return res.status(404).send({
+        message: `List not found with id ${req.params.listId}`,
       });
+    }
+    await res.send(list);
+  } catch (error) {
+    if (error.kind === 'ObjectId') {
+      return res.status(404).send({
+        message: `List not found with id ${req.params.listId}`,
+      });
+    }
+    return res.status(500).send({
+      message: `Error retrieving list with id ${req.params.listId}`,
     });
+  }
 };
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   if (!req.body.name) {
     return res.status(400).send({
       message: 'List name cannot be empty',
@@ -74,46 +74,46 @@ exports.update = (req, res) => {
     });
   }
 
-  List.findByIdAndUpdate(req.params.listId, {
-    name: req.body.name,
-    boardId: req.body.boardId,
-  }, { new: true })
-    .then((list) => {
-      if (!list) {
-        return res.status(404).send({
-          message: `List not found with id ${req.params.listId}`,
-        });
-      }
-      res.send(list);
-    }).catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(404).send({
-          message: `List not found with id ${req.params.listId}`,
-        });
-      }
-      return res.status(500).send({
-        message: `Error updating list with id ${req.params.listId}`,
+  try {
+    const list = await List.findByIdAndUpdate(req.params.listId, {
+      name: req.body.name,
+      boardId: req.body.boardId,
+    }, { new: true });
+    if (!list) {
+      return res.status(404).send({
+        message: `List not found with id ${req.params.listId}`,
       });
+    }
+    await res.send(list);
+  } catch (error) {
+    if (error.kind === 'ObjectId') {
+      return res.status(404).send({
+        message: `List not found with id ${req.params.listId}`,
+      });
+    }
+    return res.status(500).send({
+      message: `Error updating list with id ${req.params.listId}`,
     });
+  }
 };
 
-exports.delete = (req, res) => {
-  List.findByIdAndRemove(req.params.listId)
-    .then((list) => {
-      if (!list) {
-        return res.status(404).send({
-          message: `List not found with id ${req.params.listId}`,
-        });
-      }
-      res.send({ message: 'List deleted successfully!' });
-    }).catch((err) => {
-      if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-        return res.status(404).send({
-          message: `List not found with id ${req.params.listId}`,
-        });
-      }
-      return res.status(500).send({
-        message: `Could not delete list with id ${req.params.listId}`,
+exports.delete = async (req, res) => {
+  try {
+    const list = await List.findByIdAndRemove(req.params.listId);
+    if (!list) {
+      return res.status(404).send({
+        message: `List not found with id ${req.params.listId}`,
       });
+    }
+    await res.send({ message: 'List deleted successfully!' });
+  } catch (error) {
+    if (error.kind === 'ObjectId' || error.name === 'NotFound') {
+      return res.status(404).send({
+        message: `List not found with id ${req.params.listId}`,
+      });
+    }
+    return res.status(500).send({
+      message: `Could not delete list with id ${req.params.listId}`,
     });
+  }
 };
