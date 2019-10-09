@@ -30,7 +30,7 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.findAll = async (res) => {
+exports.findAll = async (req, res) => {
   try {
     const tasks = await Task.find();
     await res.send(tasks);

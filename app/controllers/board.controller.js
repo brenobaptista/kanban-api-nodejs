@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.findAll = async (res) => {
+exports.findAll = async (req, res) => {
   try {
     const boards = await Board.find();
     await res.send(boards);

@@ -29,7 +29,7 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.findAll = async (res) => {
+exports.findAll = async (req, res) => {
   try {
     const lists = await List.find();
     await res.send(lists);

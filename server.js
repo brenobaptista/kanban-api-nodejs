@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
 
-app.get('/', (res) => {
+app.get('/', (req, res) => {
   res.json({ message: 'Welcome to my Trello API clone made with Node.js.' });
 });
 
@@ -34,8 +34,8 @@ async function runMongoose() {
   await app.listen(process.env.PORT || 3000);
 }
 
-runMongoose().catch((err) => {
-  console.log('Could not connect to the database. Exiting now...', err);
+runMongoose().catch((error) => {
+  console.log('Could not connect to the database. Exiting now...', error);
   process.exit();
 });
 
