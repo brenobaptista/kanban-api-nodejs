@@ -89,10 +89,9 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const listFind = await List.find({ boardId: req.params.boardId });
-    const listMap = listFind.map((list) => list._id);
 
-    listMap.map(async (listId) => {
-      await Task.deleteMany({ listId });
+    listFind.map(async (list) => {
+      await Task.deleteMany({ listId: list._id });
     });
 
     const listRemove = await List.deleteMany({ boardId: req.params.boardId });

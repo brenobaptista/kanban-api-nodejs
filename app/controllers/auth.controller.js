@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
@@ -10,10 +11,7 @@ const User = require('../models/user.model');
 exports.signUp = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Validation failed.');
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
+    return res.status(422).json({ errors: errors.array() });
   }
   const { email, name, password } = req.body;
   bcrypt
@@ -61,7 +59,7 @@ exports.login = (req, res, next) => {
         email: loadedUser.email,
         userId: loadedUser._id.toString(),
       },
-      'secret',
+      'gabriela',
       { expiresIn: '1h' });
       res.status(200).json({ token, userId: loadedUser._id.toString() });
     })

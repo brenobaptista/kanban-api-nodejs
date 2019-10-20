@@ -1,12 +1,12 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-unused-vars */
-const { body } = require('express-validator');
+const { check } = require('express-validator');
 const auth = require('../controllers/auth.controller.js');
 const User = require('../models/user.model');
 
 module.exports = (app) => {
   app.put('/signup', [
-    body('email')
+    check('email')
       .isEmail()
       .withMessage('Please enter a valid email.')
       .custom((value, { req }) => User.findOne({ email: value })
@@ -17,10 +17,10 @@ module.exports = (app) => {
           return null;
         }))
       .normalizeEmail(),
-    body('password')
+    check('password')
       .trim()
       .isLength({ min: 5 }),
-    body('name')
+    check('name')
       .trim()
       .not()
       .isEmpty(),
