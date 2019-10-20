@@ -1,5 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 const Board = require('../models/board.model.js');
+const List = require('../models/list.model.js');
+const Task = require('../models/task.model.js');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {
@@ -85,13 +88,23 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    const listFind = await List.find({ boardId: req.params.boardId });
+    const listMap = listFind.map((list) => list._id);
+
+    listMap.map(async (listId) => {
+      await Task.deleteMany({ listId });
+    });
+
+    const listRemove = await List.deleteMany({ boardId: req.params.boardId });
+
     const board = await Board.findByIdAndRemove(req.params.boardId);
+
     if (!board) {
       return res.status(404).send({
         message: `Board not found with id ${req.params.boardId}`,
       });
     }
-    await res.send({ message: 'Board deleted successfully!' });
+    await res.send({ message: `Board deleted successfully! ${listRemove.deletedCount} lists and their respective tasks were also removed.` });
   } catch (error) {
     if (error.kind === 'ObjectId' || error.name === 'NotFound') {
       return res.status(404).send({

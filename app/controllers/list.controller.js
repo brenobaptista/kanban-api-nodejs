@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const List = require('../models/list.model.js');
+const Task = require('../models/task.model.js');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {
@@ -20,7 +21,7 @@ exports.create = async (req, res) => {
   });
 
   try {
-    const data = list.save();
+    const data = await list.save();
     await res.send(data);
   } catch (error) {
     res.status(500).send({
@@ -100,12 +101,13 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const list = await List.findByIdAndRemove(req.params.listId);
+    const taskRemove = await Task.deleteMany({ listId: req.params.listId });
     if (!list) {
       return res.status(404).send({
         message: `List not found with id ${req.params.listId}`,
       });
     }
-    await res.send({ message: 'List deleted successfully!' });
+    await res.send({ message: `List deleted successfully! ${taskRemove.deletedCount} tasks were also removed.` });
   } catch (error) {
     if (error.kind === 'ObjectId' || error.name === 'NotFound') {
       return res.status(404).send({

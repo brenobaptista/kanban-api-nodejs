@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 
 const ListSchema = mongoose.Schema({
-  name: String,
-  boardId: String,
+  name: {
+    type: String,
+    required: true,
+  },
+  boardId: {
+    type: String,
+    required: true,
+  },
 }, {
   timestamps: true,
 });

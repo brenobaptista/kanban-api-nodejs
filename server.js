@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -21,6 +22,14 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to my Trello API clone made with Node.js.' });
 });
 
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.status(error.statusCode || 500).json({
+    message: error.message,
+    data: error.data,
+  });
+});
+
 async function runMongoose() {
   mongoose.Promise = global.Promise;
 
@@ -41,6 +50,7 @@ runMongoose().catch((error) => {
 
 require('./config/herokuAwaken')();
 
+require('./app/routes/auth.routes')(app);
 require('./app/routes/board.routes.js')(app);
 require('./app/routes/list.routes.js')(app);
 require('./app/routes/task.routes.js')(app);
