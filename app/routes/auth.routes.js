@@ -26,5 +26,5 @@ module.exports = (app) => {
       .isEmpty(),
   ], auth.signUp);
 
-  app.post('login', auth.login);
+  app.post('/login', auth.login);
 };
