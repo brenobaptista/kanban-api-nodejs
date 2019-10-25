@@ -9,14 +9,6 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: String,
-    default: 'I am new!',
-  },
   boards: [
     {
       type: mongoose.Schema.Types.ObjectId,

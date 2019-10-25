@@ -19,11 +19,8 @@ module.exports = (app) => {
       .normalizeEmail(),
     check('password')
       .trim()
-      .isLength({ min: 5 }),
-    check('name')
-      .trim()
-      .not()
-      .isEmpty(),
+      .isLength({ min: 5 })
+      .withMessage('Password must be at least 5 chars long'),
   ], auth.signUp);
 
   app.post('/login', auth.login);
