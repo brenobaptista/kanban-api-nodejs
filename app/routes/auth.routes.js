@@ -20,7 +20,7 @@ module.exports = (app) => {
     check('password')
       .trim()
       .isLength({ min: 5 })
-      .withMessage('Password must be at least 5 chars long'),
+      .withMessage('Password must be at least 5 chars long.'),
   ], auth.signUp);
 
   app.post('/login', auth.login);
