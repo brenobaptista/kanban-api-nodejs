@@ -1,7 +1,0 @@
-{
-  "env": {
-    "MONGO_USER": "aeon",
-    "MONGO_PASSWORD": "8GAXc4swWRnuyR2o",
-    "NODEMAILER_PASSWORD": "cnzqnwweuhbpezjw"
-  }
-}

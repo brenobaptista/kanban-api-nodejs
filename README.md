@@ -21,7 +21,7 @@ URL: https://trello-api-nodejs.herokuapp.com
   put('/boards/:boardId')
 
   delete('/boards/:boardId')
-  
+
 ```
 
 ### Lists
@@ -37,7 +37,7 @@ URL: https://trello-api-nodejs.herokuapp.com
   put('/lists/:listId')
 
   delete('/lists/:listId')
-  
+
 ```
 
 ### Tasks
@@ -53,7 +53,23 @@ URL: https://trello-api-nodejs.herokuapp.com
   put('/tasks/:taskId')
 
   delete('/tasks/:taskId')
-  
+
+```
+
+### Sign Up
+
+```
+
+  put('/signup')
+
+```
+
+### Login
+
+```
+
+  post('/login')
+
 ```
 
 ## Schemas:
@@ -63,5 +79,6 @@ URL: https://trello-api-nodejs.herokuapp.com
 Boards: name
 Lists: name, boardId
 Tasks: name, listId, description (optional)
+User: email, password, boards (array)
 
 ```

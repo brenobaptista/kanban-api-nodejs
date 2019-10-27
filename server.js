@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to my Trello API clone made with Node.js.' });
+  res.json({ message: 'Welcome to my Trello-like API made with Node.js. This API is used in my other project called \'Aeon Planner\'.' });
 });
 
 async function runMongoose() {
