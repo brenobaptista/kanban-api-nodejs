@@ -73,7 +73,7 @@ exports.login = async (req, res, next) => {
       email: loadedUser.email,
       userId: loadedUser._id.toString(),
     }, 'gabriela', { expiresIn: '1h' });
-    res.status(200).json({ token, userId: loadedUser._id.toString() });
+    res.status(200).json({ token, userId: loadedUser._id.toString(), expiresIn: 3600 });
   } catch (error) {
     res.status(500).send({
       message: error.message || 'Some error occurred while authenticating the user.',

@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-unused-vars */
 const { check } = require('express-validator');
-const auth = require('../controllers/auth.controller.js');
+const auth = require('../controllers/auth.controller');
 const User = require('../models/user.model');
 
 module.exports = (app) => {

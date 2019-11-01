@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
-const Board = require('../models/board.model.js');
-const List = require('../models/list.model.js');
-const Task = require('../models/task.model.js');
+const Board = require('../models/board.model');
+const List = require('../models/list.model');
+const Task = require('../models/task.model');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {

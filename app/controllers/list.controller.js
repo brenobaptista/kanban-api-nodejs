@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
-const List = require('../models/list.model.js');
-const Task = require('../models/task.model.js');
+const List = require('../models/list.model');
+const Task = require('../models/task.model');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {

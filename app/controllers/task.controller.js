@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-const Task = require('../models/task.model.js');
+const Task = require('../models/task.model');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {
