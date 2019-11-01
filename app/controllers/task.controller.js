@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 const Task = require('../models/task.model');
 const User = require('../models/user.model');
@@ -23,10 +24,15 @@ exports.create = async (req, res) => {
   });
 
   try {
+    await task.save();
     const user = await User.findById(req.userId);
-    await user.tasks.push(task);
-    const data = await task.save();
-    await res.send(data);
+    user.tasks.push(task);
+    await user.save();
+    res.status(201).json({
+      message: 'Task created successfully!',
+      task,
+      creator: { _id: user._id, name: user.name },
+    });
   } catch (error) {
     res.status(500).send({
       message: error.message || 'Some error occurred while creating the task.',

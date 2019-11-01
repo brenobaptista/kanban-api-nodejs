@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 const List = require('../models/list.model');
 const Task = require('../models/task.model');
@@ -23,10 +24,15 @@ exports.create = async (req, res) => {
   });
 
   try {
+    await list.save();
     const user = await User.findById(req.userId);
-    await user.lists.push(list);
-    const data = await list.save();
-    await res.send(data);
+    user.lists.push(list);
+    await user.save();
+    res.status(201).json({
+      message: 'List created successfully!',
+      list,
+      creator: { _id: user._id, name: user.name },
+    });
   } catch (error) {
     res.status(500).send({
       message: error.message || 'Some error occurred while creating the list.',

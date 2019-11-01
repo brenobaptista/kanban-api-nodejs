@@ -18,11 +18,15 @@ exports.create = async (req, res) => {
   });
 
   try {
+    await board.save();
     const user = await User.findById(req.userId);
-    await user.boards.push(board);
+    user.boards.push(board);
     await user.save();
-    const data = await board.save();
-    await res.send(data);
+    res.status(201).json({
+      message: 'Board created successfully!',
+      board,
+      creator: { _id: user._id, name: user.name },
+    });
   } catch (error) {
     res.status(500).send({
       message: error.message || 'Some error occurred while creating the board.',
