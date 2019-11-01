@@ -15,6 +15,18 @@ const UserSchema = mongoose.Schema({
       ref: 'Board',
     },
   ],
+  lists: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'List',
+    },
+  ],
+  tasks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Task',
+    },
+  ],
 });
 
 module.exports = mongoose.model('User', UserSchema);

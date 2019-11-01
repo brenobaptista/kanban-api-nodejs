@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const Task = require('../models/task.model');
+const User = require('../models/user.model');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {
@@ -18,9 +19,12 @@ exports.create = async (req, res) => {
     name: req.body.name,
     description: req.body.description,
     listId: req.body.listId,
+    creator: req.userId,
   });
 
   try {
+    const user = await User.findById(req.userId);
+    await user.tasks.push(task);
     const data = await task.save();
     await res.send(data);
   } catch (error) {

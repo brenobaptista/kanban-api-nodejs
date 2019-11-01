@@ -3,6 +3,7 @@
 const Board = require('../models/board.model');
 const List = require('../models/list.model');
 const Task = require('../models/task.model');
+const User = require('../models/user.model');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {
@@ -13,9 +14,13 @@ exports.create = async (req, res) => {
 
   const board = new Board({
     name: req.body.name,
+    creator: req.userId,
   });
 
   try {
+    const user = await User.findById(req.userId);
+    await user.boards.push(board);
+    await user.save();
     const data = await board.save();
     await res.send(data);
   } catch (error) {
