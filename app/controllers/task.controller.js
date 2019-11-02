@@ -42,7 +42,8 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const user = req.get('userId');
+    const tasks = await Task.find({ creator: user });
     await res.send(tasks);
   } catch (error) {
     res.status(500).send({
@@ -53,7 +54,8 @@ exports.findAll = async (req, res) => {
 
 exports.findOne = async (req, res) => {
   try {
-    const task = await Task.findById(req.params.taskId);
+    const user = req.get('userId');
+    const task = await Task.find({ _id: req.params.taskId, creator: user });
     if (!task) {
       return res.status(404).send({
         message: `Task not found with id ${req.params.taskId}`,

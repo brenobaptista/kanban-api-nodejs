@@ -36,7 +36,8 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const boards = await Board.find();
+    const user = req.get('userId');
+    const boards = await Board.find({ creator: user });
     await res.send(boards);
   } catch (error) {
     res.status(500).send({
@@ -47,7 +48,8 @@ exports.findAll = async (req, res) => {
 
 exports.findOne = async (req, res) => {
   try {
-    const board = await Board.findById(req.params.boardId);
+    const user = req.get('userId');
+    const board = await Board.find({ _id: req.params.boardId, creator: user });
     if (!board) {
       return res.status(404).send({
         message: `Board not found with id ${req.params.boardId}`,

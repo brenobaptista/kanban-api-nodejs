@@ -42,7 +42,8 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const lists = await List.find();
+    const user = req.get('userId');
+    const lists = await List.find({ creator: user });
     await res.send(lists);
   } catch (error) {
     res.status(500).send({
@@ -53,7 +54,8 @@ exports.findAll = async (req, res) => {
 
 exports.findOne = async (req, res) => {
   try {
-    const list = await List.findById(req.params.listId);
+    const user = req.get('userId');
+    const list = await List.find({ _id: req.params.listId, creator: user });
     if (!list) {
       return res.status(404).send({
         message: `List not found with id ${req.params.listId}`,
