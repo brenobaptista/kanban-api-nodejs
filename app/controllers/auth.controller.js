@@ -84,62 +84,65 @@ exports.login = async (req, res, next) => {
 };
 
 exports.reset = (req, res, next) => {
-  crypto.randomBytes(32, (error, buffer) => {
-    if (error) {
-      console.log(error);
+  crypto.randomBytes(32, async (error, buffer) => {
+    try {
+      if (error) {
+        console.log(error);
+      }
+
+      const token = buffer.toString('hex');
+      const user = await User.findOne({ email: req.body.email });
+
+      if (!user) {
+        return res.status(401).send({
+          message: 'No account with that email found.',
+        });
+      }
+
+      user.resetToken = token;
+      user.resetTokenExpiration = Date.now() + 3600000;
+      await user.save();
+
+      transporter.sendMail({
+        from: '"Aeon Planner" <breno.maia@acensjr.com>',
+        to: req.body.email,
+        subject: 'Password Reset',
+        text: 'You requested a password reset. Click the link to set a new password!',
+        html: `
+          <p>You requested a password reset</p>
+          <p>Click this <a href="https://aeonplanner.netlify.com/reset/${token}">link</a> to set a new password.</p>
+        `,
+      });
+
+      res.status(200).send({
+        message: 'Email sent successfully!',
+      });
+    } catch (err) {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while resetting the password.',
+      });
     }
-    const token = buffer.toString('hex');
-    User.findOne({ email: req.body.email })
-      .then((user) => {
-        if (!user) {
-          return res.status(401).send({
-            message: 'No account with that email found.',
-          });
-        }
-        user.resetToken = token;
-        user.resetTokenExpiration = Date.now() + 3600000;
-        return user.save();
-      })
-      .then(() => {
-        transporter.sendMail({
-          from: '"Aeon Planner" <breno.maia@acensjr.com>',
-          to: req.body.email,
-          subject: 'Password Reset',
-          text: 'You requested a password reset. Click the link to set a new password!',
-          html: `
-            <p>You requested a password reset</p>
-            <p>Click this <a href="https://aeonplanner.netlify.com/reset/${token}">link</a> to set a new password.</p>
-          `,
-        });
-        return res.status(200).send({
-          message: 'Email sent successfully!',
-        });
-      })
-      .catch((err) => console.log(err));
   });
 };
 
-exports.newPassword = (req, res, next) => {
-  const newPassword = req.body.password;
-  const passwordToken = req.params.token;
-  let resetUser;
-
-  User.findOne({
-    resetToken: passwordToken,
-    resetTokenExpiration: { $gt: Date.now() },
-  })
-    .then((user) => {
-      resetUser = user;
-      return bcrypt.hash(newPassword, 12);
-    })
-    .then((hashedPassword) => {
-      resetUser.password = hashedPassword;
-      resetUser.resetToken = undefined;
-      resetUser.resetTokenExpiration = undefined;
-      return resetUser.save();
-    })
-    .then(() => res.status(200).send({ message: 'Email sent successfully!' }))
-    .catch((error) => {
-      console.log(error);
+exports.newPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      resetToken: req.params.token,
+      resetTokenExpiration: { $gt: Date.now() },
     });
+
+    const hashedPw = await bcrypt.hash(req.body.password, 12);
+
+    user.password = hashedPw;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
+    await user.save();
+
+    res.status(200).send({ message: 'Password reset successfully!' });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || 'Some error occurred while setting the new password.',
+    });
+  }
 };
