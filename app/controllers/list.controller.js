@@ -86,16 +86,25 @@ exports.update = async (req, res) => {
   }
 
   try {
-    const list = await List.findByIdAndUpdate(req.params.listId, {
-      name: req.body.name,
-      boardId: req.body.boardId,
-    }, { new: true });
+    const list = await List.findById(req.params.listId);
+
     if (!list) {
       return res.status(404).send({
         message: `List not found with id ${req.params.listId}`,
       });
     }
-    await res.send(list);
+
+    if (list.creator.toString() !== req.userId) {
+      return res.status(403).send({
+        message: 'Not authorized!',
+      });
+    }
+
+    list.name = req.body.name;
+    list.boardId = req.body.boardId;
+
+    const result = await list.save();
+    res.status(200).json({ message: 'List updated!', list: result });
   } catch (error) {
     if (error.kind === 'ObjectId') {
       return res.status(404).send({
@@ -110,13 +119,32 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const list = await List.findByIdAndRemove(req.params.listId);
-    const taskRemove = await Task.deleteMany({ listId: req.params.listId });
+    const list = await List.findById(req.params.listId);
+
     if (!list) {
       return res.status(404).send({
         message: `List not found with id ${req.params.listId}`,
       });
     }
+
+    if (list.creator.toString() !== req.userId) {
+      return res.status(403).send({
+        message: 'Not authorized!',
+      });
+    }
+
+    await List.findByIdAndRemove(req.params.listId);
+
+    const user = await User.findById(req.userId);
+
+    user.lists.pull(req.params.listId);
+
+    const tasks = await Task.find({ listId: req.params.listId });
+    tasks.map((task) => user.tasks.pull(task._id));
+    const taskRemove = await Task.deleteMany({ listId: req.params.listId });
+
+    await user.save();
+
     await res.send({ message: `List deleted successfully! ${taskRemove.deletedCount} tasks were also removed.` });
   } catch (error) {
     if (error.kind === 'ObjectId' || error.name === 'NotFound') {

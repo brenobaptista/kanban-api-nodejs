@@ -86,17 +86,26 @@ exports.update = async (req, res) => {
   }
 
   try {
-    const task = await Task.findByIdAndUpdate(req.params.taskId, {
-      name: req.body.name,
-      description: req.body.description,
-      listId: req.body.listId,
-    }, { new: true });
+    const task = await Task.findById(req.params.taskId);
+
     if (!task) {
       return res.status(404).send({
         message: `Task not found with id ${req.params.taskId}`,
       });
     }
-    await res.send(task);
+
+    if (task.creator.toString() !== req.userId) {
+      return res.status(403).send({
+        message: 'Not authorized!',
+      });
+    }
+
+    task.name = req.body.name;
+    task.description = req.body.description;
+    task.listId = req.body.listId;
+
+    const result = await task.save();
+    res.status(200).json({ message: 'Task updated!', task: result });
   } catch (error) {
     if (error.kind === 'ObjectId') {
       return res.status(404).send({
@@ -111,12 +120,28 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const task = await Task.findByIdAndRemove(req.params.taskId);
+    const task = await Task.findById(req.params.taskId);
+
     if (!task) {
       return res.status(404).send({
         message: `Task not found with id ${req.params.taskId}`,
       });
     }
+
+    if (task.creator.toString() !== req.userId) {
+      return res.status(403).send({
+        message: 'Not authorized!',
+      });
+    }
+
+    await Task.findByIdAndRemove(req.params.taskId);
+
+    const user = await User.findById(req.userId);
+
+    user.tasks.pull(req.params.taskId);
+
+    await user.save();
+
     await res.send({ message: 'Task deleted successfully!' });
   } catch (error) {
     if (error.kind === 'ObjectId' || error.name === 'NotFound') {

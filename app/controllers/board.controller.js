@@ -74,15 +74,23 @@ exports.update = async (req, res) => {
   }
 
   try {
-    const board = await Board.findByIdAndUpdate(req.params.boardId, {
-      name: req.body.name,
-    }, { new: true });
+    const board = await Board.findById(req.params.boardId);
+
     if (!board) {
       return res.status(404).send({
         message: `Board not found with id ${req.params.boardId}`,
       });
     }
-    await res.send(board);
+
+    if (board.creator.toString() !== req.userId) {
+      return res.status(403).send({
+        message: 'Not authorized!',
+      });
+    }
+
+    board.name = req.body.name;
+    const result = await board.save();
+    res.status(200).json({ message: 'Board updated!', board: result });
   } catch (error) {
     if (error.kind === 'ObjectId') {
       return res.status(404).send({
@@ -97,22 +105,37 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const listFind = await List.find({ boardId: req.params.boardId });
-
-    listFind.map(async (list) => {
-      await Task.deleteMany({ listId: list._id });
-    });
-
-    const listRemove = await List.deleteMany({ boardId: req.params.boardId });
-
-    const board = await Board.findByIdAndRemove(req.params.boardId);
+    const board = await Board.findById(req.params.boardId);
 
     if (!board) {
       return res.status(404).send({
         message: `Board not found with id ${req.params.boardId}`,
       });
     }
-    await res.send({ message: `Board deleted successfully! ${listRemove.deletedCount} lists and their respective tasks were also removed.` });
+
+    if (board.creator.toString() !== req.userId) {
+      return res.status(403).send({
+        message: 'Not authorized!',
+      });
+    }
+
+    await Board.findByIdAndRemove(req.params.boardId);
+
+    const user = await User.findById(req.userId);
+
+    const listFind = await List.find({ boardId: req.params.boardId });
+
+    listFind.map(async (list) => {
+      user.lists.pull({ _id: list._id });
+      const tasks = await Task.find({ listId: list._id });
+      tasks.map((task) => user.tasks.pull(task._id));
+      await Task.deleteMany({ listId: list._id });
+    });
+
+    const listRemove = await List.deleteMany({ boardId: req.params.boardId });
+    user.boards.pull(req.params.boardId);
+    await user.save();
+    res.status(200).json({ message: `Board deleted successfully! ${listRemove.deletedCount} lists and their respective tasks were also removed.` });
   } catch (error) {
     if (error.kind === 'ObjectId' || error.name === 'NotFound') {
       return res.status(404).send({
