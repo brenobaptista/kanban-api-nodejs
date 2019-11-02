@@ -27,6 +27,8 @@ const UserSchema = mongoose.Schema({
       ref: 'Task',
     },
   ],
+  resetToken: String,
+  resetTokenExpiration: Date,
 });
 
 module.exports = mongoose.model('User', UserSchema);

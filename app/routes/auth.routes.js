@@ -24,4 +24,8 @@ module.exports = (app) => {
   ], auth.signUp);
 
   app.post('/login', auth.login);
+
+  app.post('/reset', auth.reset);
+
+  app.post('/reset/:token', auth.newPassword);
 };

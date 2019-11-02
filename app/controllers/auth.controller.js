@@ -1,6 +1,9 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-console */
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
+const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -34,7 +37,7 @@ exports.signUp = async (req, res, next) => {
     const result = await user.save();
     res.status(201).json({ message: 'User created!', userId: result._id });
 
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: '"Aeon Planner" <breno.maia@acensjr.com>',
       to: email,
       subject: 'Welcome to Aeon!',
@@ -43,7 +46,6 @@ exports.signUp = async (req, res, next) => {
     });
 
     // eslint-disable-next-line no-console
-    console.log('Message sent: %s', info.messageId);
   } catch (error) {
     res.status(500).send({
       message: error.message || 'Some error occurred while creating the user.',
@@ -79,4 +81,65 @@ exports.login = async (req, res, next) => {
       message: error.message || 'Some error occurred while authenticating the user.',
     });
   }
+};
+
+exports.reset = (req, res, next) => {
+  crypto.randomBytes(32, (error, buffer) => {
+    if (error) {
+      console.log(error);
+    }
+    const token = buffer.toString('hex');
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          return res.status(401).send({
+            message: 'No account with that email found.',
+          });
+        }
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 3600000;
+        return user.save();
+      })
+      .then(() => {
+        transporter.sendMail({
+          from: '"Aeon Planner" <breno.maia@acensjr.com>',
+          to: req.body.email,
+          subject: 'Password Reset',
+          text: 'You requested a password reset. Click the link to set a new password!',
+          html: `
+            <p>You requested a password reset</p>
+            <p>Click this <a href="https://aeonplanner.netlify.com/reset/${token}">link</a> to set a new password.</p>
+          `,
+        });
+        return res.status(200).send({
+          message: 'Email sent successfully!',
+        });
+      })
+      .catch((err) => console.log(err));
+  });
+};
+
+exports.newPassword = (req, res, next) => {
+  const newPassword = req.body.password;
+  const passwordToken = req.params.token;
+  let resetUser;
+
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() },
+  })
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+    })
+    .then(() => res.status(200).send({ message: 'Email sent successfully!' }))
+    .catch((error) => {
+      console.log(error);
+    });
 };
