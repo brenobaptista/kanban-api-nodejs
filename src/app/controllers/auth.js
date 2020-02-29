@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // true for 465, false for other ports
   auth: {
-    user: 'breno.maia@acensjr.com',
+    user: 'brenomb07@gmail.com',
     pass: process.env.NODEMAILER_PASSWORD,
   },
 });
@@ -33,7 +33,7 @@ exports.signUp = async (req, res, next) => {
     res.status(201).json({ message: 'User created!', userId: result._id });
 
     await transporter.sendMail({
-      from: '"Aeon Planner" <breno.maia@acensjr.com>',
+      from: '"Aeon Planner" <brenomb07@gmail.com>',
       to: email,
       subject: 'Welcome to Aeon!',
       text: 'I\'m glad you joined my little app project! Feel free to give me feedback about it. Enjoy!',
@@ -99,7 +99,7 @@ exports.reset = (req, res, next) => {
       await user.save();
 
       transporter.sendMail({
-        from: '"Aeon Planner" <breno.maia@acensjr.com>',
+        from: '"Aeon Planner" <brenomb07@gmail.com>',
         to: req.body.email,
         subject: 'Password Reset',
         text: 'You requested a password reset. Click the link to set a new password!',
