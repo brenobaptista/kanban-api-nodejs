@@ -1,5 +1,5 @@
-const lists = require('../controllers/list.controller');
-const isAuth = require('../middleware/auth.middleware');
+const lists = require('../controllers/list');
+const isAuth = require('../middleware/auth');
 
 module.exports = (app) => {
   app.post('/lists', isAuth, lists.create);

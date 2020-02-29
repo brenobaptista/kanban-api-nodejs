@@ -1,8 +1,6 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
-const List = require('../models/list.model');
-const Task = require('../models/task.model');
-const User = require('../models/user.model');
+const List = require('../models/list');
+const Task = require('../models/task');
+const User = require('../models/user');
 
 exports.create = async (req, res) => {
   if (!req.body.name) {

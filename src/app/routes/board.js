@@ -1,5 +1,5 @@
-const boards = require('../controllers/board.controller');
-const isAuth = require('../middleware/auth.middleware');
+const boards = require('../controllers/board');
+const isAuth = require('../middleware/auth');
 
 module.exports = (app) => {
   app.post('/boards', isAuth, boards.create);

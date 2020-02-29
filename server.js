@@ -1,11 +1,11 @@
-/* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const cors = require('cors');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const dbConfig = require('./config/database.config.js');
+const dbConfig = require('./src/config/database.js');
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to my Trello-like API made with Node.js. This API is used in my other project called \'Aeon Planner\'.' });
+  res.json({ message: 'Welcome to my Kanban API made with Node.js. This API is used in my other project called \'Aeon Planner\'.' });
 });
 
 async function runMongoose() {
@@ -39,7 +39,7 @@ runMongoose().catch((error) => {
   process.exit();
 });
 
-require('./app/routes/auth.routes')(app);
-require('./app/routes/board.routes.js')(app);
-require('./app/routes/list.routes.js')(app);
-require('./app/routes/task.routes.js')(app);
+require('./src/app/routes/auth')(app);
+require('./src/app/routes/board.js')(app);
+require('./src/app/routes/list.js')(app);
+require('./src/app/routes/task.js')(app);

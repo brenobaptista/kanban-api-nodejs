@@ -1,5 +1,5 @@
-const tasks = require('../controllers/task.controller');
-const isAuth = require('../middleware/auth.middleware');
+const tasks = require('../controllers/task');
+const isAuth = require('../middleware/auth');
 
 module.exports = (app) => {
   app.post('/tasks', isAuth, tasks.create);

@@ -1,8 +1,6 @@
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable no-unused-vars */
 const { check } = require('express-validator');
-const auth = require('../controllers/auth.controller');
-const User = require('../models/user.model');
+const auth = require('../controllers/auth');
+const User = require('../models/user');
 
 module.exports = (app) => {
   app.put('/signup', [

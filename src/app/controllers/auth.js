@@ -1,15 +1,10 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-underscore-dangle */
 const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
-const User = require('../models/user.model');
+const User = require('../models/user');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
